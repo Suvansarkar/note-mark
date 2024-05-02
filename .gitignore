@@ -1,3 +1,7 @@
+# Git related files
+.git/
+.gitignore
+
 # Logs
 logs
 *.log
