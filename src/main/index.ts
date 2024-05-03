@@ -13,11 +13,11 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     center: true,
     title: "NoteMark",
-    frame: false,
-    vibrancy: 'under-window',
-    visualEffectState: 'active',
+    frame: true,
+    // vibrancy: 'under-window', only for MacOS (@darwin)
+    // visualEffectState: 'active',only for MacOS (@darwin)
     titleBarStyle: 'hidden',
-    trafficLightPosition: { x: 15, y: 10 },
+    // trafficLightPosition: { x: 15, y: 10 }, only for MacOS (@darwin)
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: true,
