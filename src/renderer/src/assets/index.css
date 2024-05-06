@@ -15,4 +15,12 @@
     @apply font-mono antialiased text-white;
     @apply overflow-hidden;
   }
+
+  header {
+    -webkite-app-region: drag;
+  }
+
+  button {
+    -webkit-app-region: no-drag;
+  }
 }
