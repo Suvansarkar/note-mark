@@ -11,9 +11,9 @@ An Electron application with React and TypeScript
 
 - TODO:
     - [x] Add file system integration for reading the list notes
-    - [ ] Add file system integration for reading the contents of the notes
-    - [ ] Create notes functionality
-    - [ ] Delete notes functionality
+    - [x] Add file system integration for reading the contents of the notes
+    - [x] Create notes functionality
+    - [x] Delete notes functionality
 
 ## Project Setup
 
