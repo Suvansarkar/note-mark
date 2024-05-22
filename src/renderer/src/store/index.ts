@@ -1,7 +1,8 @@
-import { NoteInfo } from "@shared/models";
+import { NoteInfo, NoteContent } from "@shared/models";
 import { atom } from "jotai";
 import { notesMock } from "@/store/mocks";
 import { unwrap } from "jotai/utils";
+import { windowsStore } from "process";
 
 const loadNotes = async () => {
   const notes = await window.context.getNotes()
@@ -38,12 +39,40 @@ export const selectedNoteAtom = unwrap(selectedNoteAtomAsync, (prev) => prev ?? 
   lastEditTime: Date.now()
 })
 
-export const createEmptyNoteAtom = atom(null, (get, set) => {
+export const saveNoteAtom = atom(null, async (get, set, newContent: NoteContent) => {
+  const notes = get(notesAtom)
+  const selectedNote = get(selectedNoteAtom)
+
+  if (!selectedNote || !notes) return
+
+  // save on disk
+  await window.context.writeNote(selectedNote.title, newContent)
+
+  // udate the saved note's last edit time
+
+  set(
+    notesAtom,
+    notes.map((note) => {
+      if (note.title === selectedNote.title) {
+        return {
+          ...note,
+          lastEditTime: Date.now()
+        }
+      }
+
+      return note
+    })
+  )
+})
+
+export const createEmptyNoteAtom = atom(null, async (get, set) => {
   const notes = get(notesAtom)
 
   if (!notes) return
 
-  const title = `Note ${notes.length + 1}`
+  const title = await window.context.createNote()
+
+  if (!title) return
 
   const newNote: NoteInfo = {
     title,
@@ -55,11 +84,15 @@ export const createEmptyNoteAtom = atom(null, (get, set) => {
   set(selectedNoteIndexAtom, 0)
 })
 
-export const deleteNoteAtom = atom(null, (get, set) => {
+export const deleteNoteAtom = atom(null, async (get, set) => {
   const notes = get(notesAtom)
   const selectedNote = get(selectedNoteAtom)
 
   if (!selectedNote || !notes) return
+
+  const isDeleted = await window.context.deleteNote(selectedNote.title)
+
+  if (!isDeleted) return
 
   set(notesAtom, notes.filter((note) => note.title !== selectedNote.title))
 
